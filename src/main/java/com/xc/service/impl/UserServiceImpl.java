@@ -27,12 +27,14 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
+
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.ObjectUtils;
 
 @Service("iUserService")
 public class UserServiceImpl implements IUserService {
@@ -1586,9 +1588,16 @@ public class UserServiceImpl implements IUserService {
         userInfoVO.setAllProfitAndLose(allProfitAndLose);
 
         BigDecimal userAllAmt = user.getUserAmt();
-        userAllAmt = userAllAmt.add(allProfitAndLose);
-        userInfoVO.setUserAmt(userAllAmt);
+//        userAllAmt = userAllAmt.add(allProfitAndLose);
         userInfoVO.setAllPositionMoney(positionVO.getAllPositionMoney());
+
+        BigDecimal allPositionMoney=positionVO.getAllPositionMoney();
+        if(ObjectUtils.isEmpty(allPositionMoney)){
+            allPositionMoney=BigDecimal.ZERO;
+        }
+        //总资产=可用资金+持仓资金
+        userAllAmt=allPositionMoney.add(user.getEnableAmt());
+        userInfoVO.setUserAmt(userAllAmt);
         userInfoVO.setEnableIndexAmt(user.getEnableIndexAmt());
 
 
