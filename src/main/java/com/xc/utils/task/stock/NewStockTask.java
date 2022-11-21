@@ -211,11 +211,12 @@ public class NewStockTask {
                             this.userPositionMapper.insertSelective(userPosition);
 
                             //加上总资产
-                            user.setEnableAmt(user.getUserAmt().add(userPosition.getOrderTotalPrice()));
+                            user.setUserAmt(user.getUserAmt().add(userPosition.getOrderTotalPrice()));
                             this.userMapper.updateByPrimaryKeySelective(user);
                             //保存申购状态为派发状态
                             l.setZts(Short.valueOf("5"));
                             this.iListsService.save(l);
+                            log.info("[派发结束]用户：{},code:{}",user.getPhone(),userPosition.getStockCode());
                         }
                     }
                 }
